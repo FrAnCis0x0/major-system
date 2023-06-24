@@ -153,16 +153,21 @@ export class Mnemonic {
         let myNumberList = this.getNumberList();
         let tempwordList: listType[] = [];
 
-        //convert numbers to words
-        myNumberList.forEach((element) => {
+        for (let index = 0; index < myNumberList.length; index++) {
+            const element = myNumberList[index];
             let word = this.getWord(this.getProperNumber(element));
-            if(word != undefined){
-                //generate unique id
-                let id = uuidv4();
-                //add word to list
-                tempwordList.push({id, answer: element, word, index: myNumberList.indexOf(element)});
+            if (word !== undefined) {
+              let id = uuidv4();
+              tempwordList.push({
+                id,
+                answer: element,
+                word,
+                index: index,
+                isCorrect: false,
+              });
             }
-        });
+          }
+          
         return tempwordList;
     }
 

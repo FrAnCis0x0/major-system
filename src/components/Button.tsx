@@ -1,13 +1,13 @@
 type ButtonProps = {
     OnBtnClick: () => void;
-    count: number;
+    name: string;
 };
 
 
 
-const Button = ({OnBtnClick , count}: ButtonProps) =>{
+const Button = ({OnBtnClick , name}: ButtonProps) =>{
     return (
-        <button className='button' onClick={OnBtnClick}>Count: {count}</button>
+        <button className='button' onClick={OnBtnClick}>{name}</button>
     );
 }
 
