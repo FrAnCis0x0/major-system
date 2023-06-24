@@ -1,6 +1,6 @@
  export type listType = {
     id: string;
-    anwser: string;
+    answer: string;
     word: string;
     index: number;
 }

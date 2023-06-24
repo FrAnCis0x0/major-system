@@ -160,7 +160,7 @@ export class Mnemonic {
                 //generate unique id
                 let id = uuidv4();
                 //add word to list
-                tempwordList.push({id, anwser: element, word, index: myNumberList.indexOf(element)});
+                tempwordList.push({id, answer: element, word, index: myNumberList.indexOf(element)});
             }
         });
         return tempwordList;
