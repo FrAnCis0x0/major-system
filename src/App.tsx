@@ -1,102 +1,84 @@
-import { useEffect, useReducer } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import Button from "./components/Button"
-import KeyboardListener from './components/KeyboardListener';
 import { Display } from './components/Display';
 import { Mnemonic } from './model/Mnemonic';
 import { listType } from './types/mnemonicType';
-
-interface AppState {
-  currentList: listType[];
-  answerList: listType[];
-  currentWord: listType;
-}
-
-const initialState = {
-  currentList: [],
-  answerList: [],
-  currentWord: {}
-}
-
-const ACTION = {
-  SET_CURRENT_LIST: 'SET_CURRENT_LIST',
-  SET_ANSWER_LIST: 'SET_ANSWER_LIST',
-  SET_CURRENT_WORD: 'SET_CURRENT_WORD',
-  CHANGE_ANSWER: 'CHANGE_ANSWER',
-  GOTO_NEXT_WORD: 'GOTO_NEXT_WORD',
-  GOTO_PREV_WORD: 'GOTO_PREV_WORD'
-
-}
-
-function reducer(state: AppState, action: any) {
-  switch (action.type) {
-    case ACTION.SET_CURRENT_LIST:
-      return { ...state, currentList: action.payload }
-
-    case ACTION.SET_ANSWER_LIST:
-      return { ...state, answerList: action.payload }
-
-    case ACTION.SET_CURRENT_WORD:
-      return { ...state, currentWord: action.payload }
-
-    case ACTION.GOTO_NEXT_WORD:
-      const nextIndex = state.currentWord.index + 1;
-      const nextWordIndex = nextIndex >= state.currentList.length ? state.currentList.length-1 : nextIndex;
-      return { ...state, currentWord: state.currentList[nextWordIndex] };
-
-    case ACTION.GOTO_PREV_WORD:
-      const prevIndex = state.currentWord.index - 1;
-      const prevWordIndex = prevIndex <= 0 ? 0 : prevIndex;
-      return { ...state, currentWord: state.currentList[prevWordIndex] };
-
-    case ACTION.CHANGE_ANSWER:
-      return { ...state, answerList: state.answerList.map((item: listType) => (item.id === state.currentWord.id)? {...item, answer: action.payload}: item) }      
-      
-    default:
-      return state
-  }
-}
-    
+import { useDispatch, useSelector } from 'react-redux';
+import { State } from './store/reducer';
+import { changeAnswer, gotoNextWord, gotoPrevWord, setAnswerList, setCurrentList, setCurrentWord, setRef } from './store/actions';
 
 
 function App() {
   const mnemonic: Mnemonic = new Mnemonic();
   //create reducer to handle state
-  const [state, dispatch] = useReducer(reducer, initialState);
-  
+  // const [state, dispatch] = useReducer(reducer, initialState);
+  const {
+    // time: { timerId, timer },
+    // word: { currWord, typedWord, activeWordRef },
+    app: {currentList, answerList, currentWord},
+} = useSelector((state: State) => state);
+
+  const dispatch = useDispatch();
+    const [showPallet, setShowPallet] = useState(false);
+
+    const activeWord = useRef<HTMLDivElement>(null);
+
+
+
+
+    useEffect(() => {
+      dispatch(setRef(activeWord));
+      document.onkeydown = (e) => {
+          if (e.ctrlKey && e.key === "k") {
+              setShowPallet((s:boolean) => !s);
+              e.preventDefault();
+          } else if (
+              e.key.length === 1 ||
+              e.key === "Backspace" ||
+              e.key === "Tab"
+          ) {
+              // recordTest(e.key, e.ctrlKey);
+              console.log(e.key);
+              e.preventDefault();
+          }
+      };
+      return () => {
+          document.onkeydown = null;
+      };
+        
+    }, [dispatch]);
  
   useEffect(() => {
     // Set current list to the word list
     const tempList = mnemonic.getWordList();
-    dispatch({type: ACTION.SET_CURRENT_LIST, payload: tempList});
     const initialAnswerList = tempList.map((item: listType) => ({
       ...item,
       answer: ""
     }));
-    dispatch({ type: ACTION.SET_ANSWER_LIST, payload: initialAnswerList });
+    //set list to the word list
+    dispatch(setCurrentList(tempList));
+
+    // Set answer list to the initial answer list
+    dispatch(setAnswerList(initialAnswerList));
     // Set current word to the first word in the list
-    dispatch({type: ACTION.SET_CURRENT_WORD, payload: tempList[0]});
-    //`${state.currentWord.answer}` is returning undefined
-    //how can I fix it
+    dispatch(setCurrentWord(tempList[0]));
+    
     
   }, []);
 
   
 
 
-  const gotoNextWord = () => {
-    dispatch({type: ACTION.GOTO_NEXT_WORD});
-  }
-  const gotoPrevWord = () => {
-    dispatch({type: ACTION.GOTO_PREV_WORD});
-    // dispatch({type: ACTION.CHANGE_ANSWER, payload: "prev"});
-  }
+  // Set current word answer to the answer list
   useEffect(() =>{
-    dispatch({type: ACTION.CHANGE_ANSWER, payload: state.currentWord.answer});
-  },[state.currentWord]);
+    dispatch(changeAnswer(currentWord.answer));
+  },[currentWord]);
+
+
+
+
 
   return (
-      //change app bg color to slate-400
-    
       
     <div className='App '>
       <header>
@@ -106,11 +88,11 @@ function App() {
         <h1 className=''>Mnemonic</h1>
       </nav>
       <main>
-        <Display itemList={state.currentList} answerList={state.answerList}/>
-        <h1>CurrentWord: {state.currentWord.word}</h1>
-        <Button OnBtnClick={gotoNextWord} name="Next Word"/>
-        <Button OnBtnClick={gotoPrevWord} name="Prev Word"/>
-        <KeyboardListener />
+        <Display wordList={currentList} answerList={answerList} activeWordRef={activeWord} currentWord={currentWord} />
+        <h1>CurrentWord: {currentWord.word}</h1>
+        <Button OnBtnClick={() => {dispatch(gotoNextWord())}} name="Next Word"/>
+        <Button OnBtnClick={() => {dispatch(gotoPrevWord())}} name="Prev Word"/>
+        {/* <KeyboardListener /> */}
       </main>
       <footer>
         <p className=''>Footer</p>
