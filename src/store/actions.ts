@@ -23,6 +23,7 @@ export const SET_CURRENT_WORD= 'SET_CURRENT_WORD';
 export const CHANGE_ANSWER= 'CHANGE_ANSWER';
 export const GOTO_NEXT_WORD= 'GOTO_NEXT_WORD';
 export const GOTO_PREV_WORD= 'GOTO_PREV_WORD';
+export const CHANGE_IS_CORRECT= 'CHANGE_IS_CORRECT';
 
 //====================================================
 
@@ -58,6 +59,12 @@ export const setRef = (payload: RefObject<HTMLDivElement>) => ({
     type: SET_REF,
     payload,
 });
+
+export const changeIsCorrect = (payload: boolean) => ({
+    type: CHANGE_IS_CORRECT,
+    payload,
+});
+
 
 //====================================================
 

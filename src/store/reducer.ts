@@ -21,6 +21,7 @@ import {
     CHANGE_ANSWER,
     GOTO_NEXT_WORD,
     GOTO_PREV_WORD,
+    CHANGE_IS_CORRECT
     //====================================================
 
 } from "./actions";
@@ -189,28 +190,31 @@ const preferenceReducer = (
 
 const appReducer = (state = initialState.app, {type, payload}: AnyAction) => {
     switch (type) {
-      case SET_CURRENT_LIST:
-        return { ...state, currentList: payload }
-  
-      case SET_ANSWER_LIST:
-        return { ...state, answerList: payload }
-  
-      case SET_CURRENT_WORD:
-        return { ...state, currentWord: payload }
-  
-      case GOTO_NEXT_WORD:
-        const nextIndex = state.currentWord.index + 1;
-        const nextWordIndex = nextIndex >= state.currentList.length ? state.currentList.length-1 : nextIndex;
-        return { ...state, currentWord: state.currentList[nextWordIndex] };
-  
-      case GOTO_PREV_WORD:
-        const prevIndex = state.currentWord.index - 1;
-        const prevWordIndex = prevIndex <= 0 ? 0 : prevIndex;
-        return { ...state, currentWord: state.currentList[prevWordIndex] };
-  
-      case CHANGE_ANSWER:
-        return { ...state, answerList: state.answerList.map((item: listType) => (item.id === state.currentWord.id)? {...item, answer: payload}: item) }   
-         
+        case SET_CURRENT_LIST:
+            return { ...state, currentList: payload }
+    
+        case SET_ANSWER_LIST:
+            return { ...state, answerList: payload }
+    
+        case SET_CURRENT_WORD:
+            return { ...state, currentWord: payload }
+    
+        case GOTO_NEXT_WORD:
+            const nextIndex = state.currentWord.index + 1;
+            const nextWordIndex = nextIndex >= state.currentList.length ? state.currentList.length-1 : nextIndex;
+            return { ...state, currentWord: state.answerList[nextWordIndex] };
+    
+        case GOTO_PREV_WORD:
+            const prevIndex = state.currentWord.index - 1;
+            const prevWordIndex = prevIndex <= 0 ? 0 : prevIndex;
+            return { ...state, currentWord: state.answerList[prevWordIndex] };
+    
+        case CHANGE_ANSWER:
+            return { ...state, answerList: state.answerList.map((item: listType) => (item.id === state.currentWord.id)? {...item, answer: payload}: item) }   
+        case CHANGE_IS_CORRECT:
+            return { ...state, answerList: state.answerList.map((item: listType) => (item.id === state.currentWord.id)? {...item, isCorrect: payload}: item) }
+
+            
         case SET_REF:
             return {
                 ...state,
