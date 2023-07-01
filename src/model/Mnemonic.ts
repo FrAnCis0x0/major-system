@@ -132,25 +132,22 @@ export class Mnemonic {
         this.textMap.set(99, "Bob");
     }
 
-    public getNumberList(): string[] {
+    private generateNumbers(type: number): string[] {
         //array to store list
         const tempList:string[] = [];
 
         //generate random numbers
-        while(tempList.length < 110){
+        while(tempList.length < type){
             let randNumber = Math.floor(Math.random() * 110);
-            if(!tempList.includes(randNumber.toString()) || tempList.length < 50){
-                tempList.push(this.getDoubleDigit(randNumber));
-                // console.log(`Adding : ${this.getDoubleDigit(randNumber)}`)
-            }
+            tempList.push(this.getDoubleDigit(randNumber));
         }
 
         return tempList;
 
     }
 
-    public getWordList(): listType[] {
-        let myNumberList = this.getNumberList();
+    private getWords(type:number): listType[] {
+        let myNumberList = this.generateNumbers(type);
         let tempwordList: listType[] = [];
 
         for (let index = 0; index < myNumberList.length; index++) {
@@ -170,7 +167,28 @@ export class Mnemonic {
           
         return tempwordList;
     }
+    
+    private getNumbers(type:number): listType[] {
+        let myNumberList = this.generateNumbers(type);
+        let tempwordList: listType[] = [];
 
+        for (let index = 0; index < myNumberList.length; index++) {
+            const element = myNumberList[index];
+            let word = this.getWord(this.getProperNumber(element));
+            if (word !== undefined) {
+              let id = uuidv4();
+              tempwordList.push({
+                id,
+                answer: word.toLowerCase(),
+                word: element,
+                index: index,
+                isCorrect: false,
+              });
+            }
+          }
+          
+        return tempwordList;
+    }
     private getWord(number: number): string | undefined {
         return this.textMap.get(number);
     }
@@ -192,14 +210,17 @@ export class Mnemonic {
         return parseInt(n);
     }
 
-    //validate the number or word
-    public validateNumber(wordNumber : string, word: string): boolean{
-        let currentNumber = this.getProperNumber(wordNumber);
-        let currentWord = this.getWord(currentNumber);
-        if(currentWord?.toLowerCase() === word.toLowerCase()){
-            return true;
-        }else{
-            return false;
-        }
+    public getList(type:string, len:number){
+        switch(type){
+            case "words":
+                return this.getWords(len);
+            case "numbers":
+                return this.getNumbers(len);
+            default:
+                return this.getWords(len);
+
+       }
     }
+
+
 }
