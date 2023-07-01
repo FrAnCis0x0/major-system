@@ -1,11 +1,7 @@
 import {
-    appendTypedHistory,
-    backtrackWord,
     changeAnswer,
     changeIsCorrect,
     gotoNextWord,
-    setChar,
-    setTypedWord,
 } from "../store/actions";
 import { store } from "../store/store";
 import { resetTest } from "./resetTest";
@@ -29,7 +25,6 @@ export const recordTest = (key: string, ctrlKey: boolean) => {
     const { dispatch, getState } = store;
     const {
         time: { timer, timerId },
-        // word: { typedWord, currWord, caretRef },
         preferences: { timeLimit },
         app: { answerList, activeWordRef,currentList, currentWord }
     } = getState();
@@ -42,7 +37,6 @@ export const recordTest = (key: string, ctrlKey: boolean) => {
     }
     if (!timerId && key !== "Tab") startTimer();
     const currWordEl = activeWordRef?.current!;
-    // currWordEl.scrollIntoView({ behavior: "smooth", block: "center" });
 
     
     let typdWord = answerList[currentWord.index].answer;
