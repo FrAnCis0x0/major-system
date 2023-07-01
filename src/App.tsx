@@ -1,25 +1,19 @@
-import { RefObject, useEffect, useRef, useState } from 'react'
-import Button from "./components/Button"
+import { useEffect, useRef, useState } from 'react'
 import { Display } from './components/Display';
-import { Mnemonic } from './model/Mnemonic';
-import { listType } from './types/mnemonicType';
 import { useDispatch, useSelector } from 'react-redux';
 import { State } from './store/reducer';
-import { changeAnswer, changeIsCorrect, gotoNextWord, gotoPrevWord, setAnswerList, setCurrentList, setCurrentWord, setRef } from './store/actions';
+import { changeAnswer, setRef, setTimerId } from './store/actions';
 import { recordTest } from './helpers/recordTest';
-
+import "./styles/themes.scss";
+import Header from './components/Header';
+import CommandPallet from "./components/CommandPallet";
+import Footer from './components/Footer';
 
 function App() {
-  const mnemonic: Mnemonic = new Mnemonic();
-  //create reducer to handle state
-  // const [state, dispatch] = useReducer(reducer, initialState);
-//   const {
-//     time: { timerId, timer },
-//     word: { currWord, typedWord, activeWordRef },
-//     app: {currentList, answerList, currentWord},
-// } = useSelector((state: State) => state);
+  
 
 const app = useSelector((state: State) => state.app);
+const time = useSelector((state: State) => state.time);
 
   const dispatch = useDispatch();
     const [showPallet, setShowPallet] = useState(false);
@@ -44,7 +38,6 @@ const app = useSelector((state: State) => state.app);
             
           ) {
               recordTest(e.key, e.ctrlKey);
-              // console.log(e.key);
               e.preventDefault();
           }
       };
@@ -53,29 +46,16 @@ const app = useSelector((state: State) => state.app);
       };
         
     }, [dispatch]);
- 
+
+
   useEffect(() => {
-    // Set current list to the word list
-    const tempList = mnemonic.getWordList();
-    const initialAnswerList = tempList.map((item: listType) => ({
-      ...item,
-      answer: ""
-    }));
-    //set list to the word list
-    dispatch(setCurrentList(tempList));
-
-    // Set answer list to the initial answer list
-    dispatch(setAnswerList(initialAnswerList));
-    // Set current word to the first word in the list
-    dispatch(setCurrentWord(initialAnswerList[0]));
-    
-    
-  }, []);
-
-  
+    if (!time.timer && time.timerId) {
+        clearInterval(time.timerId);
+        dispatch(setTimerId(null));
+    }
+}, [dispatch, time.timer, time.timerId]);
 
 
-  // Set current word answer to the answer list
   useEffect(() =>{
     dispatch(changeAnswer(app.currentWord.answer));
   },[app.currentWord]);
@@ -86,25 +66,13 @@ const app = useSelector((state: State) => state.app);
 
   return (
       
-    <div className='App '>
-      <header>
-        <p className=''>Header</p>
-      </header>
-      <nav>
-        <h1 className=''>Mnemonic</h1>
-      </nav>
-      <main>
+    <>
+        <h1 className='brand'>Major System</h1>
+        <Header/>
         <Display activeWordRef={activeWord}/>
-        <h1>CurrentWord: {app.currentWord.word}</h1>
-        <Button OnBtnClick={() => {dispatch(gotoNextWord())}} name="Next Word"/>
-        <Button OnBtnClick={() => {dispatch(gotoPrevWord())}} name="Prev Word"/>
-        {/* <KeyboardListener /> */}
-      </main>
-      <footer>
-        <p className=''>Footer</p>
-      </footer>
-      
-    </div>
+        {showPallet && <CommandPallet setShowPallet={setShowPallet} />}
+        <Footer/>
+    </>
   )
 }
 
