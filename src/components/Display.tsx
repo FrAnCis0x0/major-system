@@ -31,8 +31,7 @@ export const Display = ({activeWordRef}:{activeWordRef:RefObject<HTMLDivElement>
                 
                     return( 
                     <div key={item.id} ref={(isCurrentWord)?activeWordRef: null} className={`word ${ app.answerList[item.index].isCorrect ? "right": 
-                    `${isEmptyOrLessThanExpected(item) && isCurrentWord? "current" : 
-                    `${ isEmptyOrLessThanExpected(item)? "": "wrong"}`}`}`}><span > {item.word}</span>
+                    `${ isEmptyOrLessThanExpected(item)? "": "wrong"}`}`}><span > {item.word}</span>
                     {app.answerList.map((answer)=> (answer.id === item.id)? 
                     <span className='' key={answer.index}>{answer.answer}</span>: "" )}  </div>)})}
             </div>

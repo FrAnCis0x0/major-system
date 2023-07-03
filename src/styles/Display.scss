@@ -58,8 +58,8 @@
     }
     
     .right {
-        animation: right-animation 0.3s ease-in;
-        color: var(--fg-color);
+        animation: right-animation 0.2s ease-in;
+        color: var(--font-color);
 
         @keyframes right-animation {
             0% {
@@ -71,7 +71,7 @@
             }
         
             100% {
-                color: var(--fg-color);
+                color: var(--font-color);
 
             }
         }
