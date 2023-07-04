@@ -1,6 +1,8 @@
+import { count } from "console";
 import {
     changeAnswer,
     changeIsCorrect,
+    countCorrect,
     gotoNextWord,
 } from "../store/actions";
 import { store } from "../store/store";
@@ -85,6 +87,7 @@ export const recordTest = (key: string, ctrlKey: boolean) => {
             if(isCorrect){
                 //goto next word
                 dispatch(gotoNextWord());
+                dispatch(countCorrect());
             }
             break;
     }

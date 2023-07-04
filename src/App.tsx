@@ -8,6 +8,7 @@ import "./styles/themes.scss";
 import Header from './components/Header';
 import CommandPallet from "./components/CommandPallet";
 import Footer from './components/Footer';
+import Result from './components/Result';
 
 function App() {
   
@@ -69,7 +70,7 @@ const time = useSelector((state: State) => state.time);
     <>
         <h1 className='brand'>Major System</h1>
         <Header/>
-        <Display activeWordRef={activeWord}/>
+        {time.timer ? <Display activeWordRef={activeWord} /> : <Result/>}
         {showPallet && <CommandPallet setShowPallet={setShowPallet} />}
         <Footer/>
     </>

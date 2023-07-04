@@ -15,7 +15,9 @@ import {
     CHANGE_ANSWER,
     GOTO_NEXT_WORD,
     GOTO_PREV_WORD,
-    CHANGE_IS_CORRECT
+    CHANGE_IS_CORRECT,
+    COUNT_CORRECT,
+    RESET_CORRECT
     //====================================================
 
 } from "./actions";
@@ -38,6 +40,7 @@ export interface State {
         currentWord: listType;
         answer: string;
         activeWordRef: RefObject<HTMLDivElement> | null;
+        countCorrect: number;
     };
 }
 
@@ -64,6 +67,7 @@ export const initialState: State = {
         },
         answer: "",
         activeWordRef: null,
+        countCorrect: 0
     },
 };
 
@@ -143,6 +147,15 @@ const appReducer = (state = initialState.app, {type, payload}: AnyAction) => {
                 ...state,
                 activeWordRef: payload,
             }; 
+        case COUNT_CORRECT:
+
+            //increase countCorrect
+            const countCorrect = state.countCorrect + 1;
+            return { ...state, countCorrect: countCorrect }
+        case RESET_CORRECT:
+            return { ...state, countCorrect: 0 };
+
+
       default:
         return state
     }

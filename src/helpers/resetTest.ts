@@ -1,5 +1,5 @@
 import { Mnemonic } from "../model/Mnemonic";
-import { setAnswerList, setCurrentList, setCurrentWord, setTimerId, timerSet } from "../store/actions";
+import { resetCorrect, setAnswerList, setCurrentList, setCurrentWord, setTimerId, timerSet } from "../store/actions";
 import { store } from "../store/store";
 import { listType } from "../types/mnemonicType";
 import "../styles/Display.scss"
@@ -32,6 +32,8 @@ export const resetTest = async () => {
         dispatch(setAnswerList(initialAnswerList));
         // Set current word to the first word in the list
         dispatch(setCurrentWord(initialAnswerList[0]));
+        // reset correct count
+        dispatch(resetCorrect());
     dispatch(timerSet(timeLimit));
    
 };

@@ -24,6 +24,8 @@ export const CHANGE_ANSWER= 'CHANGE_ANSWER';
 export const GOTO_NEXT_WORD= 'GOTO_NEXT_WORD';
 export const GOTO_PREV_WORD= 'GOTO_PREV_WORD';
 export const CHANGE_IS_CORRECT= 'CHANGE_IS_CORRECT';
+export const COUNT_CORRECT= 'COUNT_CORRECT';
+export const RESET_CORRECT= 'RESET_CORRECT';
 
 //====================================================
 
@@ -65,7 +67,13 @@ export const changeIsCorrect = (payload: boolean) => ({
     payload,
 });
 
+export const countCorrect = () => ({
+    type: COUNT_CORRECT,
+});
 
+export const resetCorrect = () => ({
+    type: RESET_CORRECT,
+});
 //====================================================
 
 // Time Actions
